@@ -1,0 +1,33 @@
+name: Build for Miyoo Mini Plus
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build-armhf:
+    name: Build (ARMv7 Linux)
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+
+    - name: Install Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y zip pkg-config libsdl2-dev libsdl2-ttf-dev
+
+    - name: Compile and Package
+      run: |
+        chmod +x package_miyoo.sh
+        ./package_miyoo.sh
+
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: NotepadInc-Miyoo
+        path: dist/*.zip
